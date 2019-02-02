@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+                        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<!-- 다른 mapper와 중복되지 않도록 네임스페이스 기재 -->
+<mapper namespace="user">
+
+    <select id="userList" resultType="com.spring.Model.UserVO">
+        SELECT * FROM users
+    </select>
+	    
+	<select id="manUserGender" resultType="com.spring.Model.UserVO">
+        SELECT * FROM users ORDER BY userGender ASC
+    </select>    
+	    
+	<select id="searchUser" parameterType="int" resultType="com.spring.Model.UserVO">
+		SELECT * FROM users WHERE userNum = #{userNum}
+	</select>
+	
+	<select id ="searchUserId" parameterType="int" resultType="String">
+		SELECT userID FROM users WHERE userNum = #{userNum}
+	</select>
+	
+	<select id = "select" parameterType="hashmap" resultType="com.spring.Model.UserVO">
+		SELECT * FROM users
+		<where>
+			<choose>
+				<when test="sch_type == 'userID'"> 
+				AND userID like CONCAT('%', #{sch_value} , '%') 
+				</when> 
+				<when test="sch_type == 'name'"> 
+				AND userName like CONCAT('%', #{sch_value} , '%') 
+				</when> 
+			</choose>
+		</where>
+	</select>
+	
+</mapper>

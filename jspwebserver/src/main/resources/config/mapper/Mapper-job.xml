@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+                        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<!-- 다른 mapper와 중복되지 않도록 네임스페이스 기재 -->
+<mapper namespace="job">
+
+    <select id="manjob" resultType="com.spring.Model.ManjobVO">
+        SELECT * FROM joblist
+    </select>
+    
+	<insert id = "insertManjob" parameterType="com.spring.Model.ManjobVO">
+		INSERT INTO manjob 
+		(jobNum, jobName, jobBirth, jobEmail, jobPhone, jobGender, jobsear) 
+		VALUES
+		(#{jobNum}, #{jobName}, #{jobBirth}, #{jobEmail}, #{jobPhone}, #{jobGender}, #{jobsear})
+	</insert>
+    
+    <select id="manjobGender" resultType="com.spring.Model.ManjobVO">
+        SELECT * FROM joblist ORDER BY jobGender ASC
+	</select>
+	
+	<select id = "select" parameterType="hashmap" resultType="com.spring.Model.ManjobVO">
+		SELECT * FROM joblist
+		<where>
+			<choose>
+				<when test="sch_type == 'name'"> 
+				AND jobName like CONCAT('%', #{sch_value} , '%') 
+				</when> 
+				<when test="sch_type == 'phone'"> 
+				AND jobPhone like CONCAT('%', #{sch_value} , '%') 
+				</when> 
+				<when test="sch_type == 'email'"> 
+				AND jobEmail like CONCAT('%', #{sch_value} , '%') 
+				</when> 
+			</choose>
+		</where>
+	</select>
+	
+	<select id = "jobselect" parameterType="hashmap" resultType="com.spring.Model.ManjobVO">
+		SELECT * FROM joblist
+		<where>
+			<choose>
+				<when test="job_type == 'entry'"> 
+				jobsear like '%%직'
+				</when> 
+				<when test="job_type == 'mana'"> 
+				jobsear = "관리직" 
+				</when> 
+				<when test="job_type == 'offi'"> 
+				jobsear = "사무직" 
+				</when>
+				<when test="job_type == 'deli'"> 
+				jobsear = "배달직" 
+				</when>  
+			</choose>
+		</where>
+	</select>
+	
+	<update id = "updateManjob" parameterType="com.spring.Model.ManjobVO">
+		UPDATE manjob SET
+			jobName = #{jobName},
+			jobBirth = #{jobBirth}, 
+			jobEmail = #{jobEmail},
+			jobPhone = #{jobPhone}, 
+			jobGender = #{jobGender},
+			jobsear = #{jobsear}
+		WHERE jobNum = #{jobNum}
+	</update>
+	
+	<delete id="deleteManjob" parameterType="com.spring.Model.ManjobVO">
+		DELETE FROM manjob 
+		WHERE jobNum = #{jobNum} 
+	</delete>
+	
+</mapper>

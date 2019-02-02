@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+                        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<!-- 다른 mapper와 중복되지 않도록 네임스페이스 기재 -->
+<mapper namespace="order">
+
+    <select id="orderList" resultType="com.spring.Model.OrderVO" parameterType="int">
+        SELECT * FROM orderInfo LEFT JOIN orderSound ON orderInfo.orderNum = orderSound.orderNum WHERE complete = #{num}
+    </select>
+    
+    <select id="orderListTime" resultType="com.spring.Model.OrderVO" parameterType="int">
+        SELECT * FROM orderInfo LEFT JOIN orderSound ON orderInfo.orderNum = orderSound.orderNum WHERE complete = #{num} ORDER BY bDate, bTime ASC
+    </select>
+    
+	<insert id="insertOrder" parameterType="com.spring.Model.OrderVO">
+		INSERT INTO orderInfo (orderNum, orderDate, userNum, totalPrice, complete, bDate, bTime, bellType, region)
+		VALUES(#{orderNum}, #{orderDate}, #{userNum}, #{totalPrice}, #{complete}, #{bDate}, #{bTime}, #{bellType}, #{region})
+	</insert>
+	
+	<select id="userList" resultType="com.spring.Model.UserVO">
+        SELECT userRegion FROM users WHERE userNum = #{userNum}
+    </select>
+	
+	<select id="getNextOrderId" resultType="int">
+		SELECT IFNULL(MAX(orderNum), 0)+1 
+		FROM orderInfo
+	</select>
+	
+	<update id="updateOrder" parameterType="com.spring.Model.OrderVO">
+		UPDATE orderInfo SET
+			complete = #{complete}
+		WHERE orderNum = #{orderNum}
+	</update>
+
+	<delete id="deleteOrder" parameterType="com.spring.Model.OrderVO">
+		DELETE FROM orderInfo 
+		WHERE orderNum = #{orderNum} AND date = #{date} 
+	</delete>
+	
+	<select id="searchOrder" resultType="com.spring.Model.OrderVO" parameterType="int">
+		SELECT * FROM orderInfo WHERE orderNum = #{orderNum} 
+	</select>
+	
+	<insert id="insertDrinkItem" parameterType="com.spring.Model.OrderItemVO">
+		INSERT INTO orderDrinkItem VALUES(#{orderNum}, #{menuId}, #{type}, #{size}, #{count}, #{price})
+	</insert>
+	<insert id="insertCongeeItem" parameterType="com.spring.Model.OrderItemVO">
+		INSERT INTO orderCongeeItem VALUES(#{orderNum}, #{menuId}, #{type}, #{size}, #{count}, #{price})
+	</insert>
+	<insert id="insertSaladItem" parameterType="com.spring.Model.OrderItemVO">
+		INSERT INTO orderSaladItem VALUES(#{orderNum}, #{menuId}, #{type}, #{size}, #{count}, #{price})
+	</insert>
+	<insert id="insertSoupItem" parameterType="com.spring.Model.OrderItemVO">
+		INSERT INTO orderSoupItem VALUES(#{orderNum}, #{menuId}, #{type}, #{size}, #{count}, #{price})
+	</insert>
+	<insert id="insertStewItem" parameterType="com.spring.Model.OrderItemVO">
+		INSERT INTO orderStewItem VALUES(#{orderNum}, #{menuId}, #{type}, #{size}, #{count}, #{price})
+	</insert>
+	
+	<insert id="insertBell" parameterType="com.spring.Model.OrderVO">
+		INSERT INTO orderSound VALUES(#{orderNum}, #{bellSound})
+	</insert>
+	
+	<insert id="insertPassword" parameterType="com.spring.Model.OrderVO">
+		INSERT INTO orderPassword VALUES(#{orderNum}, #{password})
+	</insert>
+	
+	<select id="drinkItemList" parameterType="int" resultType="com.spring.Model.OrderItemVO">
+		SELECT * FROM orderDrinkItem 
+		JOIN drink ON orderDrinkItem.menuId = drink.id
+		WHERE orderNum = #{orderNum}
+	</select>
+	<select id="congeeItemList" parameterType="int" resultType="com.spring.Model.OrderItemVO">
+		SELECT * FROM orderCongeeItem
+		JOIN congee ON orderCongeeItem.menuId = congee.id 
+		WHERE orderNum = #{orderNum}
+	</select>
+	<select id="saladItemList" parameterType="int" resultType="com.spring.Model.OrderItemVO">
+		SELECT * FROM orderSaladItem
+		JOIN salad ON orderSaladItem.menuId = salad.id 
+		WHERE orderNum = #{orderNum}
+	</select>
+	<select id="soupItemList" parameterType="int" resultType="com.spring.Model.OrderItemVO">
+		SELECT * FROM orderSoupItem
+		JOIN soup ON orderSoupItem.menuId = soup.id 
+		WHERE orderNum = #{orderNum}
+	</select>
+	<select id="stewItemList" parameterType="int" resultType="com.spring.Model.OrderItemVO">
+		SELECT * FROM orderStewItem
+		JOIN stew ON orderStewItem.menuId = stew.id 
+		WHERE orderNum = #{orderNum}
+	</select>
+</mapper>
